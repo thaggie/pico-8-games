@@ -45,7 +45,8 @@ function game_init()
   score = 0
   dog = create_dog()
   heart = create_heart()
-  squirrel = create_squirrel()
+  
+  squirrels = {create_squirrel()}
   mode = 1
 end
 
@@ -56,6 +57,7 @@ end
 
 function score_point()
     score += 1
+    squirrels[#squirrels+1]=create_squirrel()
     heart = create_heart()
     sfx(0)
 end
@@ -100,28 +102,42 @@ function game_update()
   end
 
   update_speeder(heart)
-  update_speeder(squirrel)
+  
+
+  --update_speeder(squirrel)
+  
+  for i = 1,#squirrels,1 
+  do 
+    local squirrel = squirrels[i]
+    update_speeder(squirrel)
+    if detect_collision(squirrel, dog) then 
+      die()
+    end
+  end
 
   if detect_collision(heart, dog) then 
     score_point()
   end
 
-  if detect_collision(squirrel, dog) then 
-    die()
-  end
 end
 
 
+function draw_squirrel (squirrel) 
+  if (squirrel.dx == -1) then
+    spr(3, squirrel.x, squirrel.y)
+  else
+    spr(4, squirrel.x, squirrel.y)
+  end
+end
 
 function game_draw()
   cls(3)
   rect(0,0,127,127,5)
   spr(2, heart.x, heart.y)
 
-  if (squirrel.dx == -1) then
-    spr(3, squirrel.x, squirrel.y)
-  else
-    spr(4, squirrel.x, squirrel.y)
+  for i = 1,#squirrels,1 
+  do 
+    draw_squirrel(squirrels[i])
   end
 
   spr(dog.s,dog.x,dog.y)
