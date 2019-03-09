@@ -31,13 +31,19 @@ function create_heart()
 end
 
 function create_squirrel ()
+  width = 8
+  height = 8
+  local x = rnd() * (128 - width)
+  local y = rnd() * (128 - height)
+  local dx = (rnd() > 0.5) and -1 or 1
+  local dy = (rnd() > 0.5) and -1 or 1
   return {
-    x=20,
-    y=0,
-    dx=1,
-    dy=1,
-    width=7,
-    height=6
+    width = width,
+    height = height,
+    x = x,
+    y = y,
+    dx = dx,
+    dy = dy
   }
 end
 
@@ -46,7 +52,7 @@ function game_init()
   dog = create_dog()
   heart = create_heart()
   
-  squirrels = {create_squirrel()}
+  squirrels = {}
   mode = 1
 end
 
@@ -80,24 +86,27 @@ end
 function die()
     mode = 0
     sfx(2)
+    if score > high_score then
+      high_score = score
+    end
 end
 
 function game_update() 
-  if (btn(0)) then
+  if (btn(0) and dog.x > 1) then
      dog.x = dog.x - 1
      dog.s = 1
   end
   
-  if (btn(1)) then
+  if (btn(1) and dog.x < 120) then
      dog.x = dog.x + 1
      dog.s = 0
   end
   
-  if (btn(2)) then
+  if (btn(2) and dog.y > 1) then
      dog.y = dog.y - 1
   end
   
-  if (btn(3)) then
+  if (btn(3) and dog.y < 120) then
      dog.y = dog.y + 1
   end
 
@@ -147,11 +156,12 @@ end
 function _init()   
   game_init()
   mode = 0
+  high_score=0
 end
 
 function _update() 
   if mode == 0 then 
-    if btnp(5) then 
+    if btnp(5) or btnp(4) then 
       game_init()
     end
   else
@@ -163,7 +173,12 @@ function _draw()
   if mode == 0 then 
     cls()
     spr(dog.s,dog.x,dog.y)
-    print(score, 2,2, 7)
+    if (score > 0) then
+      print(score .. " - your score", 2,2, 7)
+    end
+    if (high_score > 0) then
+      print(high_score .. " - high score", 2,9, 7)
+    end
     
   else
     game_draw()
