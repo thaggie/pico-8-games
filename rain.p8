@@ -12,6 +12,7 @@ baddies = {}
 f=0
 
 function _init() 
+  cartdata('thaggie_rain')
   high = dget(0)
   score = 0
   for c=7,1,-1 do
@@ -48,19 +49,15 @@ function _update()
   
   
   for b=1,#baddies do
-    
     baddies[b].x -=1
     if (baddies[b].x < 0) then
        baddies[b] = bad()     
-   end
-    
-    
+   end    
   end
   
   if (f%18==0) then
     baddies[#baddies+1] = bad()
   end
-  
   
   score = #baddies * 100
   x = player[1].x
@@ -70,9 +67,6 @@ function _update()
     bd = baddies[b]
     if (bd.x < x+5 and bd.x >= x-5) then
       if (bd.y < y+4 and bd.y >= y-4) then
-       
-
-        
         dead = true
       end 
     end
